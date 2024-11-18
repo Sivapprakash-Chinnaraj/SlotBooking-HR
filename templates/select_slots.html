@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Time Slots</title>
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            overflow-y: auto; /* Allow scrolling */
+            position: relative;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, #74ebd5, #9face6, #74ebd5);
+            z-index: -1;
+            animation: gradientAnimation 20s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+        }
+
+        /* Floating shapes for decoration */
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-20px); opacity: 0.7; }
+            100% { transform: translateY(0); opacity: 0.5; }
+        }
+
+        .shape:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 20%;
+            animation-duration: 15s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            left: 70%;
+            animation-duration: 20s;
+        }
+
+        .shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 10%;
+            animation-duration: 12s;
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh; /* Limit height to make the page scrollable */
+            overflow-y: auto; /* Add internal scrolling for overflowing content */
+            animation: scaleIn 1s ease-in-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Header styling */
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #00796b;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Date container styling */
+        .date-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            background: #f9fafc;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-container h2 {
+            color: #00796b;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .date-container div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .date-container input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .date-container input[type="checkbox"]:hover {
+            transform: scale(1.4);
+        }
+
+        .date-container label {
+            font-size: 1.1em;
+        }
+
+        /* Scrollbar styling */
+        .date-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .date-container::-webkit-scrollbar-thumb {
+            background: #00796b;
+            border-radius: 10px;
+        }
+
+        /* Button styling */
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00796b, #004d40);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+    <div class="container">
+        <h1>Select Time Slots</h1>
+        <form action="/select_slots" method="POST">
+            {% for date, slots in formatted_slots.items() %}
+                <div class="date-container">
+                    <h2>{{ date }}</h2>
+                    {% for time, is_available in slots %}
+                        <div>
+                            <input type="checkbox" name="timeslots" value="{{ date }} {{ time }}" {% if is_available %}checked{% endif %}>
+                            <label>{{ time }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit">Save Selected Slots</button>
+        </form>
+    </div>
+</body>
+</html>

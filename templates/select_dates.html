@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Dates</title>
+    <style>
+        /* General reset and font styling */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Background animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, #9face6, #74ebd5);
+            z-index: -1;
+            animation: gradientRotate 10s linear infinite;
+        }
+
+        @keyframes gradientRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Card container */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: popIn 0.8s ease-in-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5) translateY(-50%);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Header styling */
+        h1 {
+            font-size: 2em;
+            color: #00796b;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollable dates section */
+        .dates-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            background: #f9fafc;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .dates-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dates-container::-webkit-scrollbar-thumb {
+            background: #00796b;
+            border-radius: 10px;
+        }
+
+        .dates-container div {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .dates-container input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        label {
+            font-size: 1em;
+            color: #333;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #00796b, #004d40);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: skewX(-45deg);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #004d40, #00796b);
+            transform: translateY(-3px);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Floating decorative circles */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: floatUp 10s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .bubble:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            left: 10%;
+            animation-duration: 8s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            left: 25%;
+            animation-duration: 12s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            left: 50%;
+            animation-duration: 15s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            left: 75%;
+            animation-duration: 10s;
+        }
+
+        .bubble:nth-child(5) {
+            width: 140px;
+            height: 140px;
+            left: 90%;
+            animation-duration: 20s;
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <div class="container">
+        <h1>Select Dates for Availability</h1>
+        <form action="/select_dates" method="POST">
+            <div class="dates-container">
+                {% for date in next_30_days %}
+                    <div>
+                        <input type="checkbox" name="dates" value="{{ date }}">
+                        <label>{{ date }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Save Selected Dates</button>
+        </form>
+    </div>
+</body>
+</html>
